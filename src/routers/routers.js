@@ -18,7 +18,6 @@ import UserProfile from "../screens/UserProfile";
 import ChangePassWord from "../screens/auth/ChangePassWord";
 import Login from "../screens/auth/Login";
 import CartShop from "../screens/Cart_Shop";
-import Com from "../screens/com";
 export const routers = [
   {
     path: "/login",
@@ -123,11 +122,6 @@ export const routers = [
   {
     path: '/auth/change_password',
     page: ChangePassWord,
-    isShowHeader: true
-  },
-  {
-    path:'/com',
-    page: Com,
     isShowHeader: true
   }
 ];
