@@ -17,41 +17,17 @@ const Detail = () => {
   const [products, setProducts] = useState({});
   const [sizes, setSizes] = useState([]);
   const { pid } = useParams();
-  const [similarProducts, setSimilarProducts] = useState([]);
   const dispatch = useDispatch();
+
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const fetchProductData = (productId) => {
-    axios
-      .get(`http://localhost:9999/products/${productId}`)
-      .then((response) => {
-        setProducts(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching product data:", error);
-      });
-  };
-
   useEffect(() => {
-    fetchProductData(pid);
+    fetch("http://localhost:9999/products/" + pid)
+      .then((resp) => resp.json())
+      .then((data) => {
+        setProducts(data);
+      });
   }, [pid]);
 
-  useEffect(() => {
-    if (products.brand) {
-      axios
-        .get(`http://localhost:9999/products/brand/${products.brand}`)
-        .then((response) => {
-          const filteredSimilarProducts = response.data
-            .filter((product) => product._id !== products._id)
-            .slice(0, 4);
-          setSimilarProducts(filteredSimilarProducts);
-        })
-        .catch((error) => {
-          console.error("Error fetching similar products:", error);
-        });
-    }
-  }, [products]);
 
   useEffect(() => {
     axios.get(`http://localhost:9999/sizes/${pid}`).then((res) => {
@@ -289,29 +265,74 @@ const Detail = () => {
       <div className="comments ">
         <Comments />
       </div>
-
       <div className="card">
         <div className="text-4xl font-bold mt-2">Sản phẩm tương tự</div>
         <div className="mt-2">
           <div className="flex justify-content-center">
-            {similarProducts.slice(0, 4).map((s) => (
-              <div key={s._id} className="m-2 border-round-md">
-                <Image
-                  className="border-round-md"
-                  src={s.images[0].url}
-                  alt={s.name}
-                  width="210"
-                  preview
-                />
-                <div className="font-bold text-base">{s.name}</div>
-                <div className="text-xl text-red-400 inline-block font-bold">
-                  {s.price}$
-                </div>{" "}
-                <span className="line-through text-base text-color inline-block">
-                  {s.discountedPrice}$
-                </span>{" "}
-              </div>
-            ))}
+            <div className="m-2 border-round-md">
+              <Image
+                className="border-round-md"
+                src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/798d3061f5934cd1983bade800a7f2dd_9366/GIAY_ULTRABOOST_22_trang_GX5595_01_standard.jpg"
+                alt="Image"
+                width="210"
+                preview
+              />
+              <div className="font-bold text-base">GIÀY ULTRABOOST 22</div>
+              <div className="text-xl text-red-400 inline-block font-bold">
+                2.600.000₫
+              </div>{" "}
+              <span className="line-through text-base text-color inline-block">
+                5.200.000₫
+              </span>{" "}
+            </div>
+            <div className="m-2 border-round-md">
+              <Image
+                className="border-round-md"
+                src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/798d3061f5934cd1983bade800a7f2dd_9366/GIAY_ULTRABOOST_22_trang_GX5595_01_standard.jpg"
+                alt="Image"
+                width="210"
+                preview
+              />
+              <div className="font-bold text-base">GIÀY ULTRABOOST 22</div>
+              <div className="text-xl text-red-400 inline-block font-bold">
+                2.600.000₫
+              </div>{" "}
+              <span className="line-through text-base text-color inline-block">
+                5.200.000₫
+              </span>{" "}
+            </div>
+            <div className="m-2 border-round-md">
+              <Image
+                className="border-round-md"
+                src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/798d3061f5934cd1983bade800a7f2dd_9366/GIAY_ULTRABOOST_22_trang_GX5595_01_standard.jpg"
+                alt="Image"
+                width="210"
+                preview
+              />
+              <div className="font-bold text-base">GIÀY ULTRABOOST 22</div>
+              <div className="text-xl text-red-400 inline-block font-bold">
+                2.600.000₫
+              </div>{" "}
+              <span className="line-through text-base text-color inline-block">
+                5.200.000₫
+              </span>{" "}
+            </div>
+            <div className="m-2 border-round-md">
+              <Image
+                className="border-round-md"
+                src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/798d3061f5934cd1983bade800a7f2dd_9366/GIAY_ULTRABOOST_22_trang_GX5595_01_standard.jpg"
+                alt="Image"
+                width="210"
+                preview
+              />
+              <div className="font-bold text-base">GIÀY ULTRABOOST 22</div>
+              <div className="text-xl text-red-400 inline-block font-bold">
+                2.600.000₫
+              </div>{" "}
+              <span className="line-through text-base text-color inline-block">
+                5.200.000₫
+              </span>{" "}
+            </div>
           </div>
         </div>
       </div>

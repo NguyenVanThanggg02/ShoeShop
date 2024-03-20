@@ -1,13 +1,17 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { listToast } from "../../constants";
+import { setToast } from "../../redux/features";
 
 const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordMatchError, setPasswordMatchError] = useState(false);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleRegister = () => {
         if (password !== confirmPassword) {
@@ -21,15 +25,21 @@ const Register = () => {
                     password: password,
                 })
                 .then((response) => {
-                    if (response.status === 201) {
-                        console.log("Đăng ký thành công");
+                    if (response.data.status) {
+                        dispatch(
+                            setToast({ ...listToast[0], detail: `${response.data.message}` })
+                        );
                         navigate("/login")
                     } else {
-                        console.log("Đăng ký thất bại");
+                        dispatch(
+                            setToast({ ...listToast[1], detail: `Register failed!` })
+                        );
                     }
                 })
                 .catch((error) => {
-                    console.error("Lỗi khi gửi yêu cầu đăng ký: ", error);
+                    dispatch(
+                        setToast({ ...listToast[2], detail: `${error}!` })
+                    );
                 });
         }
     };

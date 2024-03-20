@@ -3,11 +3,16 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { listToast } from "../constants";
+import { setToast } from "../redux/features";
 const ConfirmDialog = (props) => {
   const { visible, setVisible, id } = props;
   const onHide = () => {
     setVisible(false);
   };
+  const dispatch = useDispatch();
   const onConfirm = () => {
     axios
       .post("http://localhost:9999/order_detail/delOrderDetail", {
@@ -15,13 +20,20 @@ const ConfirmDialog = (props) => {
       })
       .then((res) => {
         if (res.data.success) {
-          console.log("Delete successfully!");
+          dispatch(
+            setToast({ ...listToast[0], detail: `Delete successfully!` })
+          );
         } else {
-          console.error("Failed to delete order detail!");
+          dispatch(
+            setToast({
+              ...listToast[1],
+              detail: `Failed to delete order detail!`,
+            })
+          );
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        dispatch(setToast({ ...listToast[2], detail: `${error}!` }));
       })
       .then((e) => {
         setVisible(false);
@@ -39,9 +51,10 @@ const ConfirmDialog = (props) => {
             label="Cancel"
             icon="pi pi-times"
             onClick={onHide}
-            className="p-button-text"
+            className="p-button-text text-white bg-red-500"
           />
           <Button
+            className=""
             label="Confirm"
             icon="pi pi-check"
             onClick={onConfirm}
@@ -62,6 +75,7 @@ const CartShop = (props) => {
   const [order, setOder] = useState(null);
   const [orderDetail, setOrderDetail] = useState([]);
   const [visibleDialog, setVisibleDialog] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     fetch(`http://localhost:9999/order/getOrderDetail?userId=${user._id}`, {
       userId: user._id,
@@ -89,23 +103,6 @@ const CartShop = (props) => {
   const onHide = () => {
     setVisible(false);
   };
-  const handlePay = (order) => {
-    axios
-      .post("http://localhost:9999/order/changStatusOrder", { orderId: order })
-      .then((response) => {
-        if (response.data.success) {
-          console.log("Payment success!");
-        } else {
-          console.error("Failed to add product");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .then((e) => {
-        setVisible(false);
-      });
-  };
   return (
     <Dialog
       header="Shopping Cart"
@@ -120,11 +117,11 @@ const CartShop = (props) => {
           {orderDetail && orderDetail[0] ? (
             orderDetail.map((o) => {
               return (
-                <div className="flex align-items-center justify-content-center m-auto card w-10 surface-200 mt-4">
-                  <div className="formgrid grid">
+                <div className="flex align-items-center justify-content-center m-auto card w-11 surface-200 mt-4">
+                  <div className="formgrid grid w-full">
                     <div className="field col-6 my-auto">
                       <div className="formgrid grid my-auto">
-                        <div className="field col-5 flex my-auto">
+                        <div className="field col-4 flex my-auto ">
                           <img
                             src={o.image}
                             className="flex align-items-center justify-content-center img-fluid rounded-3 m-auto"
@@ -132,7 +129,7 @@ const CartShop = (props) => {
                             style={{ width: "70%" }}
                           />
                         </div>
-                        <div className="field col-7 font-bold m-auto">
+                        <div className="field col-8 font-bold m-auto">
                           <div className="w-full mb-3">{o.name}</div>
                           <div>
                             <div className=" mb-3">Size: {o.size} </div>
@@ -143,27 +140,27 @@ const CartShop = (props) => {
                     </div>
                     <div className="field col-3 my-auto">
                       <div className="mt-2">
-                        <Button
+                        {/* <Button
                           className=" bg-white text-green-600 h-4rem w-4rem border-round border-2 border-200"
                           label="-"
                           onClick={decreaseQuantity}
-                        />
+                        /> */}
                         <InputText
                           className="h-4rem w-4rem border-round border-2 border-200 mx-2"
                           style={{ textAlign: "center" }}
-                          value={value}
+                          value={o.quantity}
                           onChange={(e) => setValue(e.target.value)}
                         />
-                        <Button
+                        {/* <Button
                           className=" bg-white text-green-600 h-4rem w-4rem border-round border-2 border-200"
                           label="+"
                           onClick={increaseQuantity}
-                        />
+                        /> */}
                       </div>
                     </div>
                     <div className="field col-3 my-auto">
                       <div className="formgrid grid">
-                        <div className="field col my-auto">
+                        <div className="field col-7 my-auto">
                           <div className="my-auto inline-block">
                             <h3 className="my-auto">
                               {o.total_cost.toLocaleString("en-US", {
@@ -173,7 +170,7 @@ const CartShop = (props) => {
                             </h3>
                           </div>
                         </div>
-                        <div className="field col my-auto">
+                        <div className="field col-5 my-auto">
                           <div className="ml-6 my-auto inline-block">
                             <Button
                               className="my-auto bg-red-500"
@@ -198,7 +195,7 @@ const CartShop = (props) => {
           ) : (
             <div className="text-center font-bold text-3xl">Cart is empty</div>
           )}
-          <div className="flex align-items-center justify-content-center m-auto card w-10 surface-200 mt-4">
+          <div className="flex align-items-center justify-content-center m-auto card w-11 surface-200 mt-4">
             <div>
               Total:{" "}
               {totalPrice
@@ -214,7 +211,7 @@ const CartShop = (props) => {
             <Button
               className="w-full"
               label="Pay"
-              onClick={(e) => handlePay(order)}
+              onClick={(e) => navigate("/payment")}
             />
           </div>
         </div>

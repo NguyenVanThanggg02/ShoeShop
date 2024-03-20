@@ -3,7 +3,10 @@ import { Button } from "primereact/button";
 import { MegaMenu } from "primereact/megamenu";
 import { Ripple } from "primereact/ripple";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { listToast } from "../constants";
+import { setToast } from "../redux/features";
 import Profile from "../screens/auth/Profile";
 import CartShop from "../screens/Cart_Shop";
 
@@ -94,8 +97,10 @@ export default function MenuBar() {
 
     items.push(newItem);
   }
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const end = (props) => {
+
     const { } = props;
 
     const handleClick = (event) => {
@@ -107,6 +112,9 @@ export default function MenuBar() {
     const handleLogout = () => {
       localStorage.removeItem("user");
       navigate("/");
+      dispatch(
+        setToast({ ...listToast[0], detail: "Log out successfully!" })
+      );
     };
     const handleLogin = () => {
       navigate("/login");

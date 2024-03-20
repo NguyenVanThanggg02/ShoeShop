@@ -2,11 +2,15 @@ import axios from "axios";
 import { React, useState } from "react";
 import { Button, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { listToast } from "../../constants";
+import { setToast } from "../../redux/features";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleLogin = () => {
         axios
@@ -15,19 +19,25 @@ const Login = () => {
                 password: password,
             })
             .then((response) => {
-                if (response.status === 200) {
+                if (response.data.user) {
                     console.log(response.data.user);
-                    console.log("Đăng nhập thành công");
+                    dispatch(
+                        setToast({ ...listToast[0], detail: "Log in successfully!" })
+                    );
                     // Lưu thông tin người dùng vào local storage
                     localStorage.setItem('user', JSON.stringify(response.data.user));
                     // Chuyển hướng người dùng đến trang chính
                     navigate("/")
                 } else {
-                    console.log("Đăng nhập thất bại");
+                    dispatch(
+                        setToast({ ...listToast[1], detail: `${response.data.message}` })
+                    );
                 }
             })
             .catch((error) => {
-                console.error("Lỗi khi gửi yêu cầu đăng nhập: ", error);
+                dispatch(
+                    setToast({ ...listToast[1], detail: `Error sending login request! ` })
+                );
             });
     };
 

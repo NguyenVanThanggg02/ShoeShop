@@ -1,7 +1,7 @@
 export const listToast = [
-    { severity: 'success', summary: 'Thành công' },
-    { severity: 'error', summary: 'Lỗi' },
-    { severity: 'warn', summary: 'Cảnh báo' },
+    { severity: 'success', summary: 'Successfull' },
+    { severity: 'error', summary: 'Error' },
+    { severity: 'warn', summary: 'Warning' },
     { severity: 'info', summary: 'Info' },
 ]
 
